@@ -1,4 +1,6 @@
 # wnmap
+[![Build Status](https://travis-ci.com/GREEB/wnmap-priv.svg?token=6N8nvY7nCx7srxq54soQ&branch=main)](https://travis-ci.com/GREEB/wnmap-priv)
+[![codecov](https://codecov.io/gh/GREEB/wnmap-priv/branch/main/graph/badge.svg?token=UAMMVBZJ3U)](https://codecov.io/gh/GREEB/wnmap-priv)
 
 ## Build Setup
 
