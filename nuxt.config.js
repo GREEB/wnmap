@@ -31,7 +31,11 @@ export default {
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: {
     dirs: [
-      '~/components'
+      '~/components',
+      {
+        path: '~/components/device/',
+        prefix: 'Device'
+      }
     ]
   },
 

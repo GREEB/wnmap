@@ -6,16 +6,16 @@ const Device = require('../models/device.model')
 mongoose.Promise = global.Promise
 mongoose.connect(config.DB, { useNewUrlParser: true, useUnifiedTopology: true }).then(
   () => {
-    console.log('Database is connected')
+    console.success('Database is connected')
   },
   (err) => {
-    console.log('Can not connect to the database' + err)
+    console.info('Can not connect to the database' + err)
   }
 )
 mongoose.set('useFindAndModify', false)
 module.exports = async function addDevices (devices) {
   const unixTime = Math.floor(Date.now() / 1000)
-  console.log('MongoDB: saving devices ')
+  console.info('MongoDB: saving devices ')
   const scanresult = {}
   scanresult.added = []
   scanresult.notadded = []

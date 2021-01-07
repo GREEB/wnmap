@@ -82,7 +82,6 @@ export default {
     },
     assignedusers () {
       const a = this.$store.state.devices.selectedDevice[0].owners
-      console.log(a)
       return Object.keys(a).map(key => a[key].name)
     }
   },

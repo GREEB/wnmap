@@ -10,7 +10,6 @@ module.exports = {
   async scan (req) {
     args = req.body
     if (req.body.flags && req.body.subnet && req.body.interval && req.body.intervaltime) {
-      console.log(args)
       if (req.body.interval === true) {
         loop = true
         await runOnInterval()
@@ -53,7 +52,6 @@ function awaitFunction () {
 
 const interval = async function actuallydoScan () {
   if (!loop) { return }
-  console.log('acctually doning scan')
   if (!lastscan) {
     const scanresult = await runmap(args.subnet, args.flags)
     if (scanresult) {
@@ -83,7 +81,7 @@ const interval = async function actuallydoScan () {
 }
 
 async function doSingleScan () {
-  console.log('acctually doning scan')
+  console.info('Doing single scan')
   if (!lastscan) {
     const scanresult = await runmap(args.subnet, args.flags)
     if (scanresult) {

@@ -8,7 +8,7 @@ const User = require('../models/user.model')
 
 // Defined get data(index or listing) route
 deviceRoutes.route('/').get(function (req, res) {
-  console.log('hit:', req.originalUrl)
+  console.info('Express: ', req.originalUrl)
   Device.find({}).populate('owners').exec((err, a) => {
     res.json(a)
   })

@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-app-bar
+      v-if="dev"
       app
       clipped-right
       height="48"
@@ -12,26 +13,60 @@
       <v-btn v-if="!drawer" icon @click.stop="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-toolbar-title v-if="dev">
+      <v-toolbar-title v-if="dev.hasHostname">
         {{ dev.hostname[0].hostname[0].item.name }}
       </v-toolbar-title>
       <v-btn v-if="!dev" icon to="/">
         <v-icon>mdi-home</v-icon>
       </v-btn>
+
+      <v-btn icon to="/json">
+        <v-icon>mdi-code-json</v-icon>
+      </v-btn>
+
+      <Fetchbutton />
+      <v-spacer />
+      <v-btn icon to="/users">
+        <v-icon>mdi-account-plus</v-icon>
+      </v-btn>
+      <v-spacer />
       <v-btn icon to="/chat">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn icon to="/json">
-        <v-icon>mdi-code-json</v-icon>
+      <v-responsive max-width="156">
+        <v-text-field
+          dense
+          flat
+          hide-details
+          rounded
+          solo-inverted
+        />
+      </v-responsive>
+    </v-app-bar>
+    <v-app-bar
+      v-else
+      app
+      clipped-right
+      height="48"
+      color="rgb(47, 49, 54)"
+    >
+      <v-btn v-if="dev" icon to="/" @click="unselect()">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+      <v-btn v-if="!drawer" icon @click.stop="drawer = !drawer">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+      <v-btn v-if="!dev" icon to="/">
+        <v-icon>mdi-home</v-icon>
       </v-btn>
       <v-btn icon to="/users">
         <v-icon>mdi-account-plus</v-icon>
       </v-btn>
       <Fetchbutton />
-
-<!--       <UserDialog />
- -->      <v-spacer />
-
+      <v-spacer />
+      <v-btn icon to="/chat">
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
       <v-responsive max-width="156">
         <v-text-field
           dense

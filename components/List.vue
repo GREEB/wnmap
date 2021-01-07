@@ -8,7 +8,7 @@
         v-for="n in data"
         :key="n.id"
         link
-        :to="{ name: 'device-id', params: { id: n.ipid }}"
+        :to="{ name: 'device-id', params: { id: n.id }}"
         @click="rowClick(n)"
       >
         <v-list-item-content>
@@ -126,7 +126,9 @@ export default {
       this.iptoggle = !this.iptoggle
     },
     rowClick (item) {
-      this.$store.commit('devices/setSelectedId', item.id)
+      /*       router.push({ name: 'user', params: { userId: '123' } })
+      router.push('home')
+      this.$store.commit('devices/setSelectedId', item.id) */
     }
   }
 }

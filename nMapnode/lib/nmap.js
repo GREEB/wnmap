@@ -18,7 +18,6 @@ module.exports = runmap = (subnet, flags) => {
           host.scans.push({ time: new Date(), status: true, firstscan: true })
           host.id = parseInt(host.address[0].item.addr.split('.').join(''))
           host.up = true
-          host.note = '...'
           deviceInfo.push(host)
         };
       };

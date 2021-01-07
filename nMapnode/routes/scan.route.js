@@ -9,8 +9,6 @@ let lastscan
 
 // Defined get data(index or listing) route
 scanRoutes.route('/').post(asyncHandler(async (req, res) => {
-  console.log('req to nmap was send')
-  console.log(Math.floor(Date.now() / 1000))
   // console.log(lastscan, unixTime, unixTime - lastscan);
   const doscanb = await scanner.scan(req)
   res.send(doscanb)
