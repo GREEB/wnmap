@@ -1,4 +1,5 @@
 # wnmap
+[![Build Status](https://travis-ci.com/GREEB/wnmap-priv.svg?token=6N8nvY7nCx7srxq54soQ&branch=main)](https://travis-ci.com/GREEB/wnmap-priv)
 
 ## Build Setup
 
