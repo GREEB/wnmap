@@ -21,6 +21,10 @@ const Device = new Schema({
   owners: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  }],
+  tags: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag'
   }]
 }, {
   collection: 'devices'

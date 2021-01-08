@@ -31,7 +31,7 @@
       </v-row>
 
       <v-select
-        v-if="assignedusers.length < 1"
+
         v-model="select"
         :items="items"
         label="Outlined style"
@@ -59,11 +59,13 @@ export default {
   async fetch () {
     // const resp = []
     const a = await this.$axios.$get('/api/users')
-    this.items = Object.keys(a).map(key => a[key].name)
+    if (a === null) { this.items = [] } else {
+      this.items = Object.keys(a).map(key => a[key].name)
+    }
   },
   data () {
     return {
-      select: 'test',
+      select: '',
       scandata: [],
       model: [],
       exuser: [],
@@ -92,10 +94,14 @@ export default {
   },
   methods: {
     async checkinput (n) {
-      await this.$axios.$post('/api/devices/user/' + this.dev.mId, {
-        users: n
-      })
-      await console.log(n)
+      if (!this.assignedusers.includes(n)) {
+        await this.$axios.$post('/api/devices/user/' + this.dev.mId, {
+          users: n
+        })
+        // NOT ADDED YET
+      }
+      /*
+      await console.log(n) */
     }
     /*       console.log(this.select, this.exuser)
       if (n.length === 0 || n === this.exuser[0]) {

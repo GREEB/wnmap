@@ -1,31 +1,20 @@
 const express = require('express')
-const userRoutes = express.Router()
+const tagRoutes = express.Router()
 const mongoose = require('mongoose')
 
 // Require Post model in our routes module
 const asyncHandler = require('express-async-handler')
 const User = require('../models/user.model')
 const Device = require('../models/device.model')
+const Tag = require('../models/tag.model')
 
 // Defined get data(index or listing) route
-userRoutes.route('/').get(function (req, res) {
-  User.find({}).populate('devices').exec((err, posts) => {
+tagRoutes.route('/').get(function (req, res) {
+  Tag.find({}).populate('devices').exec((err, posts) => {
     res.json(posts)
   })
-/*   User
-    .find({})
-    .populate('devices')
-    .exec(function (err, story) {
-      res.json(story)
-
-      if (err) { return handleError(err) }
-      console.log('The author is %s', story.author.name)
-    })
-  User.find({}, function (users) {
-    res.json(users)
-  }) */
 })
-userRoutes.route('/').post(asyncHandler(async (req, res) => {
+tagRoutes.route('/').post(asyncHandler(async (req, res) => {
   console.log(req.body, req.params)
   const n = await User.findOne({ name: req.body.users }).exec()
   if (n === null) {
@@ -39,7 +28,7 @@ userRoutes.route('/').post(asyncHandler(async (req, res) => {
     res.json(owner)
   }
 }))
-userRoutes.route('/:id').delete(asyncHandler(async (req, res) => {
+tagRoutes.route('/:id').delete(asyncHandler(async (req, res) => {
   console.log(req.body, req.params.id)
   const n = await User.findOne({ _id: req.params.id }).exec()
   if (n !== null) {
@@ -49,7 +38,7 @@ userRoutes.route('/:id').delete(asyncHandler(async (req, res) => {
     })
   }
 }))
-userRoutes.route('/add/:id').post(asyncHandler(async (req, res) => {
+tagRoutes.route('/add/:id').post(asyncHandler(async (req, res) => {
   console.log(req.body.users[0])
   const n = await User.findOne({ name: req.body.users[0] }).exec()
   const d = await Device.findById(req.params.id).exec()
@@ -114,10 +103,10 @@ userRoutes.route('/add/:id').post(asyncHandler(async (req, res) => {
   })
 }) */
 // Defined delete | remove | destroy route
-userRoutes.route('/delete/:id').delete(function (req, res) {
+tagRoutes.route('/delete/:id').delete(function (req, res) {
   User.findOneAndDelete({ id: req.params.id }, function (err) {
     if (err) { res.json(err) } else { res.json('Successfully removed') }
   })
 })
 
-module.exports = userRoutes
+module.exports = tagRoutes

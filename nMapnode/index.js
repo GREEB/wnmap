@@ -8,9 +8,7 @@ const app = require('express')()
 const deviceRoute = require('./routes/device.route')
 const userRoute = require('./routes/user.route')
 const scanRoute = require('./routes/scan.route')
-
-const unixTime = Math.floor(Date.now() / 1000)
-// Pass a http.Server instance to the listen method
+const tagRoute = require('./routes/tag.route')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -21,7 +19,9 @@ app.get('/test', function (req, res) {
 
 app.use('/users', userRoute)
 app.use('/devices', deviceRoute)
+app.use('/tags', tagRoute)
 app.use('/scan', scanRoute)
+
 // Export express app
 
 module.exports = app

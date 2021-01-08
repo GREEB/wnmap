@@ -1,17 +1,22 @@
 const express = require('express')
 const deviceRoutes = express.Router()
 const asyncHandler = require('express-async-handler')
+const mongoose = require('mongoose')
 
 // Require Post model in our routes module
 const Device = require('../models/device.model')
 const User = require('../models/user.model')
+const Tag = require('../models/tag.model')
 
 // Defined get data(index or listing) route
 deviceRoutes.route('/').get(function (req, res) {
   console.info('Express: ', req.originalUrl)
-  Device.find({}).populate('owners').exec((err, a) => {
-    res.json(a)
-  })
+  Device.find({})
+    .populate('owners')
+    .populate('tags')
+    .exec((err, a) => {
+      res.json(a)
+    })
 })
 deviceRoutes.route('/note/:id').post(function (req, res) {
   console.log(req.body, req.params)
@@ -33,6 +38,27 @@ deviceRoutes.route('/user/:id').post(asyncHandler(async (req, res) => {
     // user not found
   } else {
     d.owners.push(n)
+    d.save()
+    n.devices.push(d)
+    n.save()
+  }
+}))
+deviceRoutes.route('/tag/:id').post(asyncHandler(async (req, res) => {
+  const n = await Tag.findOne({ name: req.body.text }).exec()
+  // console.log(n, d)
+  if (n === null) {
+    const d = await Device.findById(req.params.id).exec()
+    const tag = new Tag({
+      _id: new mongoose.Types.ObjectId(),
+      name: req.body.text
+    })
+    d.tags.push(n)
+    d.save()
+    tag.devices.push(d)
+    tag.save()
+  } else {
+    const d = await Device.findById(req.params.id).exec()
+    d.tags.push(n)
     d.save()
     n.devices.push(d)
     n.save()

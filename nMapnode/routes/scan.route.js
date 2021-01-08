@@ -1,6 +1,7 @@
 const express = require('express')
 const scanRoutes = express.Router()
 const asyncHandler = require('express-async-handler')
+const mongoose = require('mongoose')
 const runmap = require('../lib/nmap')
 const addDevices = require('../lib/mongo')
 const scanner = require('../lib/doscan')

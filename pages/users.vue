@@ -200,7 +200,11 @@ export default {
       res.json()
     ) */
     const b = await this.$axios.get('/api/users')
-    this.users = b.data
+    if (b.data === null) {
+      this.users = []
+    } else {
+      this.users = b.data
+    }
   },
   data: () => ({
     dialog: false,

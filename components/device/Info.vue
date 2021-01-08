@@ -18,11 +18,26 @@
             <div v-if="dev.hasMac">
               {{ dev.address[1].item.addr }}
             </div>
+            <!--             <v-chip
+              v-if="dev.os !== 'No os'"
+              style="height: 20px; font-size:12px"
+              color="success darken-2"
+            >
+              linux
+            </v-chip> -->
+            <v-chip
+              v-for="(d, index) in tags"
+              :key="index"
+              color="warning darken-3"
+              text-color="white"
+              style="height: 20px; font-size:12px"
+            >
+              {{ d.name }}
+            </v-chip>
           </v-col>
         </v-row>
-        <v-divider />
-
-        <div v-if="dev.note" class="py-4">
+        <v-divider class="my-2" />
+        <div v-if="dev.note" class="py-2">
           {{ dev.note }}
         </div>
         <div class="text--primary">
@@ -123,7 +138,7 @@
              -->
             <v-combobox
               v-model="model"
-              :items="items"
+              :items="tags[0]"
               :search-input.sync="search"
               hide-selected
               outlined
@@ -165,8 +180,8 @@ export default {
     return {
       reveal: false,
       note: '',
-      items: ['Gaming', 'Programming', 'Vue', 'Vuetify'],
-      model: ['Vuetify'],
+      items: ['Router', 'Programming', 'Linux', 'Windows'],
+      model: [],
       search: null
     }
   },
@@ -181,16 +196,34 @@ export default {
     },
     dev () {
       return this.$store.state.devices.selectedDevice[0]
+    },
+    tags () {
+      return this.$store.state.devices.selectedDevice[0].tags
+    }
+  },
+  watch: {
+    model () {
+      console.log(this.model)
     }
   },
   mounted () {
     this.note = this.getnote
   },
   methods: {
-    submit () {
-      this.$axios.$post('/api/devices/note/' + this.dev.devId, {
-        text: this.note
-      })
+    async submit () {
+      if (this.note !== this.getnote) { // If same dont change
+        this.$axios.$post('/api/devices/note/' + this.dev.devId, {
+          text: this.note
+        })
+      }
+      if (JSON.stringify(this.model) !== JSON.stringify(this.tags)) {
+        for await (const contents of this.model) {
+          console.log(contents)
+          await this.$axios.$post('/api/devices/tag/' + this.dev.mId, {
+            text: contents
+          })
+        }
+      }
     }
   }
 }

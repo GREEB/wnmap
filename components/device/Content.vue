@@ -15,40 +15,6 @@
   </v-container>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      reveal: false,
-      note: ''
-    }
-  },
-  computed: {
-    getnote () {
-      return this.$store.state.devices.selectedDevice[0].note
-    },
-    sd () {
-      const e = this.$store.state.devices.selectedDevice[0].ports
-      const b = e.slice().reverse()
-      return b
-    },
-    dev () {
-      return this.$store.state.devices.selectedDevice[0]
-    }
-  },
-  mounted () {
-    this.note = this.getnote
-  },
-  methods: {
-    submit () {
-      this.$axios.$post('/api/devices/note/' + this.dev.devId, {
-        text: this.note
-      })
-    }
-  }
-}
-</script>
-
 <style>
 textarea{
   font-size: 12px;

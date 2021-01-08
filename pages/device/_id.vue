@@ -3,6 +3,7 @@
     class="overflow-hidden"
     style="position: relative;height: 100%;background-color: #1d1f24;"
   >
+    {{ tags }}
     <DeviceContent v-if="selectedDevice" />
   </v-sheet>
 </template>
@@ -188,6 +189,7 @@ export default {
           os: this.osses, // TODO: split shit up
           times: item.times, // TODO: split shit up
           note: item.note,
+          tags: item.tags,
           owners: item.owners
         }
       }).sort((a, b) => b.count - a.count)
