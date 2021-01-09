@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-app-bar
-      v-if="dev"
       app
       clipped-right
       height="48"
@@ -13,7 +12,7 @@
       <v-btn v-if="!drawer" icon @click.stop="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-toolbar-title v-if="dev.hasHostname">
+      <v-toolbar-title v-if="dev && dev.hasHostname">
         {{ dev.hostname[0].hostname[0].item.name }}
       </v-toolbar-title>
       <v-btn v-if="!dev" icon to="/">
@@ -26,57 +25,31 @@
 
       <Fetchbutton />
       <v-spacer />
-      <v-btn icon to="/users">
-        <v-icon>mdi-account-plus</v-icon>
-      </v-btn>
-      <v-spacer />
-      <v-btn icon to="/chat">
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <v-responsive max-width="156">
-        <v-text-field
-          dense
-          flat
-          hide-details
-          rounded
-          solo-inverted
+
+      <v-alert
+        v-if="scandin && scanstatus"
+        class="alert justify-center pa-1 ma-0 pl-10"
+        dense
+        color="#2f3136"
+      >
+        <v-progress-circular
+          class="spinner"
+          :size="16"
+          indeterminate
         />
-      </v-responsive>
+        Nmap is running in a loop with
+        <strong> {{ (scanstatus[1].intervaltime / 1000) / 60 }} min </strong>
+        delay
+        <v-btn
+          class="ml-3"
+          small
+          @click="stopscan"
+        >
+          stop?
+        </v-btn>
+      </v-alert>
     </v-app-bar>
-    <v-app-bar
-      v-else
-      app
-      clipped-right
-      height="48"
-      color="rgb(47, 49, 54)"
-    >
-      <v-btn v-if="dev" icon to="/" @click="unselect()">
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-      <v-btn v-if="!drawer" icon @click.stop="drawer = !drawer">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-      <v-btn v-if="!dev" icon to="/">
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
-      <v-btn icon to="/users">
-        <v-icon>mdi-account-plus</v-icon>
-      </v-btn>
-      <Fetchbutton />
-      <v-spacer />
-      <v-btn icon to="/chat">
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <v-responsive max-width="156">
-        <v-text-field
-          dense
-          flat
-          hide-details
-          rounded
-          solo-inverted
-        />
-      </v-responsive>
-    </v-app-bar>
+
     <v-navigation-drawer
       v-model="drawer"
       app
@@ -93,7 +66,7 @@
         width="70"
         floating
       >
-        <v-avatar
+        <!-- <v-avatar
           x-large
           class="d-block text-center mx-auto mt-4"
           size="36"
@@ -108,15 +81,27 @@
           </v-icon>
         </v-avatar>
 
-        <v-divider class="mx-3 my-5" />
-
-        <v-avatar
-          v-for="n in 6"
-          :key="n"
-          class="d-block text-center mx-auto mb-9"
-          color="grey darken-3"
+        <v-divider class="mx-3 my-5" /> -->
+        <v-btn
+          v-if="!dev"
+          active-class="no-active"
+          class="ml-2 mt-2"
           size="28"
-        />
+          icon
+          to="/"
+        >
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+        <v-divider class="mx-3 my-5" />
+        <v-btn
+          class="ml-2 mb-6"
+          size="28"
+          icon
+          to="/users"
+        >
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
+        <Fetchbutton class="ml-2 mb-6" />
       </v-navigation-drawer>
       <v-sheet
         color="#2F3136"
@@ -167,7 +152,17 @@
 
 <script>
 export default {
+  async fetch () {
+    await this.$axios.get('api/scan/check').then((res) => {
+      this.scandin = res.data[0]
+      this.scanstatus = res.data
+      console.log(this.scanstatus)
+    })
+  },
   data: () => ({
+    scan: [],
+    scanstatus: [],
+    scandin: false,
     rounded: true,
     floating: true,
     drawer: null,
@@ -181,9 +176,30 @@ export default {
   computed: {
     dev () {
       return this.$store.state.devices.selectedDevice[0]
+    },
+    scansta () {
+      return this.$store.state.scans.scanstatus
+    }
+  },
+  watch: {
+    '$store.state.scans.scanstatus' () {
+      this.$fetch()
+    }
+  },
+  mounted () {
+    this.$fetch()
+  },
+  activated () {
+    // Call fetch again if last fetch more than 30 sec ago
+    if (this.$fetchState.timestamp <= Date.now() - 3000) {
+      this.$fetch()
     }
   },
   methods: {
+    async stopscan () {
+      this.scanstatus = await this.$axios.get('api/scan/stop')
+      this.scandin = false
+    },
     unselect () {
       const d = []
       this.$store.commit('devices/setSelectedDevice', d)
@@ -202,4 +218,6 @@ export default {
   font-size .6em !important
 .main
   background-color #35393F
+.v-btn--active.no-active::before
+  display: none
 </style>

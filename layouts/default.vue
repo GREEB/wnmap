@@ -4,6 +4,7 @@
     <v-main class="main">
       <nuxt />
     </v-main>
+    <Footer class="ml-14" />
   </v-app>
 </template>
 <style lang="stylus" scoped>

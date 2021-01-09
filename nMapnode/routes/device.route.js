@@ -44,6 +44,7 @@ deviceRoutes.route('/user/:id').post(asyncHandler(async (req, res) => {
   }
 }))
 deviceRoutes.route('/tag/:id').post(asyncHandler(async (req, res) => {
+  console.log('Tag req send', req.params, req.body)
   const n = await Tag.findOne({ name: req.body.text }).exec()
   // console.log(n, d)
   if (n === null) {
@@ -52,15 +53,15 @@ deviceRoutes.route('/tag/:id').post(asyncHandler(async (req, res) => {
       _id: new mongoose.Types.ObjectId(),
       name: req.body.text
     })
-    d.tags.push(n)
-    d.save()
-    tag.devices.push(d)
+    tag.devices.addToSet(d)
     tag.save()
+    d.tags.addToSet(tag)
+    d.save()
   } else {
     const d = await Device.findById(req.params.id).exec()
-    d.tags.push(n)
+    d.tags.addToSet(n)
     d.save()
-    n.devices.push(d)
+    n.devices.addToSet(d)
     n.save()
   }
 }))

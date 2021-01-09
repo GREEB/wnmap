@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="dev">
     <v-card
       max-width="344"
       color="rgb(47, 49, 54)"
@@ -18,21 +18,14 @@
             <div v-if="dev.hasMac">
               {{ dev.address[1].item.addr }}
             </div>
-            <!--             <v-chip
-              v-if="dev.os !== 'No os'"
-              style="height: 20px; font-size:12px"
-              color="success darken-2"
-            >
-              linux
-            </v-chip> -->
             <v-chip
-              v-for="(d, index) in tags"
+              v-for="(d, index) in model"
               :key="index"
               color="warning darken-3"
               text-color="white"
               style="height: 20px; font-size:12px"
             >
-              {{ d.name }}
+              {{ d }}
             </v-chip>
           </v-col>
         </v-row>
@@ -108,6 +101,7 @@
         </v-btn>
       </v-card-actions>
 
+      <!-- ON EXPAND -->
       <v-expand-transition>
         <v-card
           v-if="reveal"
@@ -123,22 +117,13 @@
               outlined
               name="input-7-4"
               label="Note"
-              hint="Press enter to save"
               rows="1"
               auto-grow
               row-height="1"
             />
-            <!--             <v-btn
-              color="primary"
-              text
-              @click="submit(dev.id)"
-            >
-              Save
-            </v-btn>
-             -->
             <v-combobox
               v-model="model"
-              :items="tags[0]"
+              :items="items"
               :search-input.sync="search"
               hide-selected
               outlined
@@ -180,7 +165,7 @@ export default {
     return {
       reveal: false,
       note: '',
-      items: ['Router', 'Programming', 'Linux', 'Windows'],
+      items: [],
       model: [],
       search: null
     }
@@ -196,29 +181,48 @@ export default {
     },
     dev () {
       return this.$store.state.devices.selectedDevice[0]
-    },
-    tags () {
-      return this.$store.state.devices.selectedDevice[0].tags
     }
   },
   watch: {
+    reveal () {
+      console.log(this.reveal)
+      if (this.reveal) {
+        this.getAllTags()
+      }
+    },
     model () {
-      console.log(this.model)
+      // console.log(this.model)
     }
   },
   mounted () {
+    this.setTags()
     this.note = this.getnote
   },
   methods: {
+    setTags () {
+      const d = this.$store.state.devices.selectedDevice[0].tags
+      for (const key in d) {
+        const element = d[key]
+        this.model.push(element.name)
+      }
+    },
+    async getAllTags () {
+      const d = await this.$axios.get('/api/tags')
+      for (const key in d[0]) {
+        const element = d[key]
+        this.items.push(element.name)
+      }
+    },
     async submit () {
       if (this.note !== this.getnote) { // If same dont change
         this.$axios.$post('/api/devices/note/' + this.dev.devId, {
           text: this.note
         })
       }
+      console.log(JSON.stringify(this.model) !== JSON.stringify(this.tags))
       if (JSON.stringify(this.model) !== JSON.stringify(this.tags)) {
         for await (const contents of this.model) {
-          console.log(contents)
+          if (!this.model.includes(contents)) { this.model.push(contents) }
           await this.$axios.$post('/api/devices/tag/' + this.dev.mId, {
             text: contents
           })

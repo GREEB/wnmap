@@ -3,6 +3,21 @@
     class="overflow-hidden"
     style="position: relative;height: 100%;"
   >
+    <v-container fill-height>
+      <v-layout row wrap align-center>
+        <v-flex class="text-center">
+          <h1 class="align-center">
+            Welcome to wnMap
+          </h1>
+          <h2 v-if="all.length === 0" class="align-center">
+            No devices Found
+          </h2>
+          <span v-if="all.length === 0">Maybe try to run a scan?</span>
+          <span v-else>Maybe try to select a device on the left</span>
+          <Fetchbutton v-if="all.length === 0" />
+        </v-flex>
+      </v-layout>
+    </v-container>
     <!--     <v-navigation-drawer
       v-model="drawer2"
       absolute
@@ -44,6 +59,9 @@ export default {
     }
   },
   computed: {
+    all () {
+      return this.$store.state.globaldevices
+    },
     dev () {
       return this.$store.state.devices.selectedDevice[0]
     },

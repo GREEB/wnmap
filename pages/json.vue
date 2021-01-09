@@ -1,7 +1,16 @@
 <template>
   <div>
     <json-viewer
+      v-if="dev"
       :value="dev"
+      :expand-depth="1"
+      copyable
+      sort
+      theme="my-awesome-json-theme"
+    />
+    <json-viewer
+      v-else
+      :value="{lol:'i have nothing to display'}"
       :expand-depth="1"
       copyable
       sort

@@ -27,37 +27,7 @@
                 sm="12"
                 md="12"
               >
-                <div v-if="scandin && scanstatus.data[1]" class="alertcontainer">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <div
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-progress-circular
-                          class="spinner"
-                          :size="16"
-                          indeterminate
-                        />
-                        <v-alert
-                          class="alert"
-                          dense
-                          color="primary"
-                        >
-                          Nmap is running in a loop with
-                          <strong> {{ scanstatus.data[1].intervaltime }} ms </strong>
-                          delay
-                          <v-btn
-                            small
-                            @click="stopscan"
-                          >
-                            stop?
-                          </v-btn>
-                        </v-alert>
-                      </div>
-                    </template>
-                  </v-tooltip>
-                </div>
+                <div v-if="scandin && scanstatus.data[1]" class="alertcontainer" />
               </v-col>
             </v-row>
             <v-row>
@@ -161,12 +131,14 @@ export default {
       const res = await this.$axios.post('api/scan', data)
       this.scanstatus = await this.$axios.get('api/scan/check')
       this.scandin = this.scanstatus.data[0]
+      this.$store.commit('scans/setScanStatus', this.scandin)
 
       return res
     },
     async check4scan () {
       this.scanstatus = await this.$axios.get('api/scan/check')
       this.scandin = this.scanstatus.data[0]
+      this.$store.commit('scans/setScanStatus', this.scandin)
     },
     async stopscan () {
       this.scanstatus = await this.$axios.get('api/scan/stop')

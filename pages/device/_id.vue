@@ -3,7 +3,20 @@
     class="overflow-hidden"
     style="position: relative;height: 100%;background-color: #1d1f24;"
   >
-    {{ tags }}
+    <!--     <v-container v-if="allDevices.length === 0" fill-height>
+      <v-layout row wrap align-center>
+        <v-flex class="text-center">
+          <h1 class="align-center">
+            <v-btn icon to="/" style="font-size:1em">
+              <v-icon>
+                mdi-arrow-left
+              </v-icon>
+            </v-btn>
+            Device Not Found
+          </h1>
+        </v-flex>
+      </v-layout>
+    </v-container> -->
     <DeviceContent v-if="selectedDevice" />
   </v-sheet>
 </template>
@@ -33,6 +46,7 @@ export default {
     selectedDevice () {
       const s = this.selectedId
       const d = this.allDevices
+      console.log(s, d)
       const sd = d.find(el => el._id === s)
       return sd
     },
@@ -139,6 +153,12 @@ export default {
       const scans = this.selectedDevice.scans
       return this.$moment(scans.slice().pop().time).fromNow()
     },
+    lastonline () {
+      const scans = this.selectedDevice.scans
+      const scan = scans.slice().reverse()
+      const objs = this.$_.find(scan, function (obj) { return obj.status === true })
+      return this.$moment(objs.time).fromNow()
+    },
     osses () {
       const d = this.selectedDevice
       if (this.hasOs && d && typeof d.os[0].osmatch !== 'undefined') {
@@ -155,7 +175,9 @@ export default {
   },
   mounted () {
     this.getdevs()
-    this.getDevbyId()
+    if (this.allDevices.length !== 0) {
+      this.getDevbyId()
+    }
   },
   methods: {
     getdevs () {
@@ -169,6 +191,7 @@ export default {
     getDevbyId () {
       const dev = []
       dev.push(this.selectedDevice)
+      console.log(this.selectedDevice)
       const result = dev.map((item) => {
         return {
           hasPorts: this.hasPorts,
@@ -190,7 +213,8 @@ export default {
           times: item.times, // TODO: split shit up
           note: item.note,
           tags: item.tags,
-          owners: item.owners
+          owners: item.owners,
+          lastonline: this.lastonline
         }
       }).sort((a, b) => b.count - a.count)
       this.device = result

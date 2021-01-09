@@ -1,5 +1,6 @@
 <template>
   <v-card
+    v-if="dev"
     max-width="344"
     color="rgb(47, 49, 54)"
   >
@@ -15,7 +16,7 @@
             Scans
           </p>
           <div>
-            Last seen {{ dev.lastseen }}
+            Last seen {{ dev.lastonline }}
           </div>
           <div>
             <v-rating
@@ -41,40 +42,7 @@ margin-left: -3px;"
       class="pb-0"
       style="background: rgb(47, 49, 54);
 color: #FFFFFF;"
-    >
-      <!-- <v-list-group
-      v-for="(item, index) in sd"
-      :key="index"
-      :value="0"
-      no-action
-    >
-      <template v-slot:activator>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ item.time }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </template>
-
-      <v-list-item
-        v-for="(child, i) in item.scans"
-        :key="i"
-      >
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-list-item-icon>
-              <v-icon v-if="child.status" color="green">
-                mdi-checkbox-blank-circle-outline
-              </v-icon><v-icon v-else color="green">
-                mdi-checkbox-blank-circle-outline
-              </v-icon>
-            </v-list-item-icon>
-            {{ child.time | moment("h:mm a") }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list-group> -->
-    </v-list>
+    />
 
     <v-card-title>Infos</v-card-title>
 
