@@ -1,5 +1,6 @@
 # wnmap
 start of a nmap frontend, was to learn nuxt, not really working and for raspberrypi4
+tags, users and more would liked to have integrated wifi scanning aswell (kismet)
 
 ### Mainscreen with data
 ![mainscreen](https://i.imgur.com/vebZCRD.png)
